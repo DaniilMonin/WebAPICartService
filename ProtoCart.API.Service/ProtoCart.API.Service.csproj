@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ProtoCart.Data.Common\ProtoCart.Data.Common.csproj" />
+      <ProjectReference Include="..\ProtoCart.Data.Database\ProtoCart.Data.Database.csproj" />
+      <ProjectReference Include="..\ProtoCart.Data.Validation\ProtoCart.Data.Validation.csproj" />
+      <ProjectReference Include="..\ProtoCart.Services.Common\ProtoCart.Services.Common.csproj" />
+      <ProjectReference Include="..\ProtoCart.Services.Container\ProtoCart.Services.Container.csproj" />
+      <ProjectReference Include="..\ProtoCart.Services.Log\ProtoCart.Services.Log.csproj" />
+      <ProjectReference Include="..\ProtoCart.Services.Templates\ProtoCart.Services.Templates.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.7" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
+    </ItemGroup>
+
+
+</Project>

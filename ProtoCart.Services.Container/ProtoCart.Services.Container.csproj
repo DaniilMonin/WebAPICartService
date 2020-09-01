@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ProtoCart.Data.Common\ProtoCart.Data.Common.csproj" />
+      <ProjectReference Include="..\ProtoCart.Data.Database\ProtoCart.Data.Database.csproj" />
+      <ProjectReference Include="..\ProtoCart.Data.Validation\ProtoCart.Data.Validation.csproj" />
+      <ProjectReference Include="..\ProtoCart.Services.Common\ProtoCart.Services.Common.csproj" />
+      <ProjectReference Include="..\ProtoCart.Services.Log\ProtoCart.Services.Log.csproj" />
+      <ProjectReference Include="..\ProtoCart.Services.Scheduler\ProtoCart.Services.Scheduler.csproj" />
+      <ProjectReference Include="..\ProtoCart.Services.Templates\ProtoCart.Services.Templates.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Autofac" Version="5.2.0" />
+      <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Data.Sqlite" Version="3.1.7" />
+      <PackageReference Include="SQLite" Version="3.13.0" />
+      <PackageReference Include="SqlKata.Execution" Version="2.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ProtoCart.Data.Common\ProtoCart.Data.Common.csproj" />
+      <ProjectReference Include="..\ProtoCart.Services.Common\ProtoCart.Services.Common.csproj" />
+    </ItemGroup>
+
+</Project>
