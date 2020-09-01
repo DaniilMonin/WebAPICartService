@@ -4,6 +4,8 @@
     {
         public abstract string Connection { get; }
         public abstract int HooksRetryCount { get; }
+        public abstract int ChunkSize { get; }
+        public abstract int ParallelDegree { get; }
         public abstract bool IsDebugLogsEnabled { get; }
         public abstract bool IsTraceLogsEnabled { get; }
         public abstract bool IsInfoLogsEnabled { get; }

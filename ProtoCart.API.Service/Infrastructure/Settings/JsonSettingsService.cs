@@ -6,6 +6,8 @@ namespace ProtoCart.API.Service.Infrastructure.Settings
     {
         public override string Connection => "Data Source=E:/LevelUp/Database/blogging.db";
         public override int HooksRetryCount => 3;
+        public override int ChunkSize => 250;
+        public override int ParallelDegree => 10;
         public override bool IsDebugLogsEnabled => true;
         public override bool IsTraceLogsEnabled => true;
         public override bool IsInfoLogsEnabled => true;

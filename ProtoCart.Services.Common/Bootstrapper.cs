@@ -1,4 +1,5 @@
 ﻿using ProtoCart.Data.Common.Requests;
+using ProtoCart.Services.Common.Business.Calculators.GenerateCartReport;
 using ProtoCart.Services.Common.Business.Operations.CleanOldCarts;
 using ProtoCart.Services.Common.Business.Operations.GenerateCartReport;
 using ProtoCart.Services.Common.Business.Operations.Hooks;
@@ -14,6 +15,8 @@ namespace ProtoCart.Services.Common
         public static void Init(IServiceRegistry serviceRegistry)
             => serviceRegistry
                 .BindAsSingleton<ILogService, LogService>()
+                
+                .BindAsFactory<CartLinksCalculatorProcess>()
                 
                 .BindAsTransientToSelf<IOperation<AddHookRequest>, AddHookOperation>()
                 .BindAsTransientToSelf<IOperation<CleanOldCartsRequest>, CleanOldCartsOperation>()

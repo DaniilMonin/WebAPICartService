@@ -2,9 +2,9 @@
 
 namespace ProtoCart.Data.Common.Aggregators
 {
-    public sealed class DailyReportAggregation : Aggregator<Cart>
+    public sealed class DailyReportAggregation : Aggregator<CartLink>
     {
-        public override void Aggregate(Cart iem)
+        public override void Aggregate(CartLink iem)
         {
             //iem.
         }

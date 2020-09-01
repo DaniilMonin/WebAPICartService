@@ -1,4 +1,6 @@
-﻿using ProtoCart.Services.Common.Business.Repositories.Reports;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using ProtoCart.Services.Common.Business.Repositories.Reports;
 using ProtoCart.Services.Common.Business.Templating;
 using ProtoCart.Services.Common.Infrastructure;
 using ProtoCart.Services.Common.Infrastructure.Logger;
@@ -15,6 +17,17 @@ namespace ProtoCart.Services.Common.Business.Reporting
         {
             _templatingService = templatingService;
             _periodCartReportEntitiesRepository = periodCartReportEntitiesRepository;
+        }
+
+        public void Generate<TDataReport>(int templateId, TDataReport dataReport)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task GenerateAsync<TDataReport>(int templateId, TDataReport dataReport, CancellationToken cancellationToken,
+            bool captureContext = false)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

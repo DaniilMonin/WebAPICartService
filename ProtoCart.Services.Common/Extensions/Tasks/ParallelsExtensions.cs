@@ -22,7 +22,7 @@ namespace ProtoCart.Services.Common.Extensions.Tasks
         /// <typeparam name="TItem"></typeparam>
         /// <returns></returns>
         public static Task<TResult[]> ForEachAsync<TResult, TItem>(
-            this IQueryable<TItem> items,
+            this IEnumerable<TItem> items,
             int degree,
             Func<TItem, CancellationToken, bool, Task<TItem>> body,
             CancellationToken cancellationToken,
@@ -43,7 +43,7 @@ namespace ProtoCart.Services.Common.Extensions.Tasks
                         {
                             cancellationToken.ThrowIfCancellationRequested();
                             
-                            TItem item = await body(partition.Current, cancellationToken, captureContext).ConfigureAwait(captureContext);
+                            TItem item = body == null ? partition.Current : await body(partition.Current, cancellationToken, captureContext).ConfigureAwait(captureContext);
                             
                             result.Aggregate(item);
                         }

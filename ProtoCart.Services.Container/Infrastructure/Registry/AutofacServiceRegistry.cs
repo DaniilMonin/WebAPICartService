@@ -33,6 +33,13 @@ namespace ProtoCart.Services.Container.Infrastructure.Registry
             return this;
         }
 
+        public override IServiceRegistry BindAsFactory<TData>()
+        {
+            _containerBuilder.RegisterType<Factory<TData>>().As<IFactory<TData>>().SingleInstance();
+            
+            return this;
+        }
+
         protected override IServiceRegistry BindAsSingleton<TAbstraction, TImplementation1, TImplementation2>()
         {
             _containerBuilder.RegisterType<TImplementation2>().As<TImplementation1>().As<TAbstraction>().SingleInstance();

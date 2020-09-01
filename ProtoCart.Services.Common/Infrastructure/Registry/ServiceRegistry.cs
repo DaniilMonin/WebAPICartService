@@ -106,6 +106,9 @@ namespace ProtoCart.Services.Common.Infrastructure.Registry
             where TArgument : class
             where TImplementation : class, IOperation<TArgument>;
 
+        public abstract IServiceRegistry BindAsFactory<TData>()
+            where TData : class;
+
         protected abstract IServiceRegistry BindAsSingleton<TAbstraction, TImplementation1, TImplementation2>()
             where TAbstraction : class
             where TImplementation1 : class, TAbstraction

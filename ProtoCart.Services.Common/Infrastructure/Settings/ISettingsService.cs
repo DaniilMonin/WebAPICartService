@@ -4,6 +4,8 @@
     {
         string Connection { get; }
         int HooksRetryCount { get; }
+        int ChunkSize { get; }
+        int ParallelDegree { get; }
         bool IsDebugLogsEnabled { get; }
         bool IsTraceLogsEnabled { get; }
         bool IsInfoLogsEnabled { get; }

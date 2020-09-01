@@ -1,4 +1,5 @@
-﻿using ProtoCart.Data.Common;
+﻿using System.Threading;
+using ProtoCart.Data.Common;
 using ProtoCart.Services.Common.Business.Repositories;
 using ProtoCart.Services.Common.Business.Templating;
 using ProtoCart.Services.Common.Infrastructure.Jobs;
@@ -74,5 +75,8 @@ namespace ProtoCart.Services.Common.Infrastructure.Registry
         IServiceRegistry BindAsOperationFactory<TArgument, TImplementation>()
             where TArgument : class
             where TImplementation : class, IOperation<TArgument>;
+
+        IServiceRegistry BindAsFactory<TData>()
+            where TData : class;
     }
 }

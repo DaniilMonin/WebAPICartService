@@ -1,15 +1,11 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using ProtoCart.Data.Common;
-using ProtoCart.Data.Common.Entities;
 using ProtoCart.Data.Common.Requests;
-using ProtoCart.Services.Common.Business.Repositories.Carts;
-using ProtoCart.Services.Common.Business.Repositories.Hooks;
+using ProtoCart.Services.Common.Business.Calculators.GenerateCartReport;
+using ProtoCart.Services.Common.Business.Reporting;
 using ProtoCart.Services.Common.Business.Repositories.Links;
-using ProtoCart.Services.Common.Business.Repositories.Products;
+using ProtoCart.Services.Common.Infrastructure.Factories;
 using ProtoCart.Services.Common.Infrastructure.Logger;
-using ProtoCart.Services.Common.Infrastructure.Operations;
 using ProtoCart.Services.Common.Infrastructure.Operations.Generic;
 using ProtoCart.Services.Common.Infrastructure.Settings;
 
@@ -17,37 +13,34 @@ namespace ProtoCart.Services.Common.Business.Operations.GenerateCartReport
 {
     internal sealed class GenerateCartReportOperation : Operation<GenerateCartReportRequest>
     {
-        private readonly ICartEntitiesRepository _cartEntitiesRepository;
-        private readonly IProductEntitiesRepository _productEntitiesRepository;
+        private readonly IReportingService _reportingService;
         private readonly ICartLinksEntitiesRepository _linksEntitiesRepository;
-        private readonly IHookEntitiesRepository _hookEntitiesRepository;
+        private readonly IFactory<CartLinksCalculatorProcess> _linksCalculator;
 
         public GenerateCartReportOperation(
             ILogService logService, 
             ISettingsService settingsService, 
-            ICartEntitiesRepository cartEntitiesRepository,
-            IProductEntitiesRepository productEntitiesRepository,
+            IReportingService reportingService,
             ICartLinksEntitiesRepository linksEntitiesRepository,
-            IHookEntitiesRepository hookEntitiesRepository) 
+            IFactory<CartLinksCalculatorProcess> linksCalculator) 
             : base(logService, settingsService)
         {
-            _cartEntitiesRepository = cartEntitiesRepository;
-            _productEntitiesRepository = productEntitiesRepository;
+            _reportingService = reportingService;
             _linksEntitiesRepository = linksEntitiesRepository;
-            _hookEntitiesRepository = hookEntitiesRepository;
+            _linksCalculator = linksCalculator;
         }
 
-        protected override async Task DoProcessAsync(GenerateCartReportRequest argument, CancellationToken cancellationToken, bool captureContext = false)
+        protected override async Task DoProcessAsync(GenerateCartReportRequest argument,
+            CancellationToken cancellationToken, bool captureContext = false)
         {
-            int totalCarts = 0;
-            int totalPrice = 0;
+            CartLinksCalculatorProcess linksCalculatorProcess = _linksCalculator.Create();
 
-            foreach (Cart cart in await _cartEntitiesRepository.ReadAsync(cancellationToken, captureContext).ConfigureAwait(captureContext))
-            {
-                totalCarts++;
-                
-                
-            }
+            await _linksEntitiesRepository.CalculateAsync(linksCalculatorProcess, cancellationToken, captureContext)
+                .ConfigureAwait(captureContext);
+
+            await _reportingService
+                .GenerateAsync(argument.ReportTemplateId, linksCalculatorProcess.ReportData, cancellationToken,
+                    captureContext).ConfigureAwait(captureContext);
         }
     }
 }
