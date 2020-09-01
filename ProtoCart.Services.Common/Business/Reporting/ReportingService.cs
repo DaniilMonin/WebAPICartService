@@ -8,12 +8,12 @@ using ProtoCart.Services.Common.Infrastructure.Settings;
 
 namespace ProtoCart.Services.Common.Business.Reporting
 {
-    public abstract class ReportingService : InfrastructureUnit, IReportingService
+    internal sealed class ReportingService : InfrastructureUnit, IReportingService
     {
         private readonly ITemplatingService _templatingService;
         private readonly IPeriodCartReportEntitiesRepository _periodCartReportEntitiesRepository;
 
-        protected ReportingService(ILogService logService, ISettingsService settingsService, ITemplatingService templatingService, IPeriodCartReportEntitiesRepository periodCartReportEntitiesRepository) : base(logService, settingsService)
+        public ReportingService(ILogService logService, ISettingsService settingsService, ITemplatingService templatingService, IPeriodCartReportEntitiesRepository periodCartReportEntitiesRepository) : base(logService, settingsService)
         {
             _templatingService = templatingService;
             _periodCartReportEntitiesRepository = periodCartReportEntitiesRepository;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +7,6 @@ using ProtoCart.Data.Common.Operations;
 using ProtoCart.Data.Common.Requests;
 using ProtoCart.Services.Common.Business.Repositories.Links;
 using ProtoCart.Services.Common.Infrastructure.Logger;
-using ProtoCart.Services.Common.Infrastructure.Operations;
 using ProtoCart.Services.Common.Infrastructure.Operations.Generic;
 using ProtoCart.Services.Common.Infrastructure.Settings;
 using ProtoCart.Services.Common.Validation;

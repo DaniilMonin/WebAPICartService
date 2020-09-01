@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 using Polly;
 using Polly.Retry;
 using ProtoCart.Data.Common.Entities;
+using ProtoCart.Data.Common.Requests;
 using ProtoCart.Services.Common.Business.Repositories.Links;
+using ProtoCart.Services.Common.Infrastructure.Factories;
 using ProtoCart.Services.Common.Infrastructure.Logger;
+using ProtoCart.Services.Common.Infrastructure.Operations.Generic;
 using ProtoCart.Services.Common.Infrastructure.Settings;
 using ProtoCart.Services.Common.Repositories.Generic;
 using Quartz;
@@ -19,20 +22,29 @@ namespace ProtoCart.Services.Scheduler.Business.Jobs.CleaningOldCarts
     {
         private readonly IReadOnlyEntitiesRepository<Hook> _hooReadOnlyEntitiesRepository;
         private readonly ICartLinksEntitiesRepository _cartLinksEntitiesRepository;
+        private readonly IFactory<IOperation<CleanOldCartsRequest>> _factory;
 
         public CleaningOldCartsQuartzSchedulerJob(
             ILogService logService, 
             ISettingsService settingsService, 
             IReadOnlyEntitiesRepository<Hook> hooReadOnlyEntitiesRepository, 
-            ICartLinksEntitiesRepository cartLinksEntitiesRepository) 
+            ICartLinksEntitiesRepository cartLinksEntitiesRepository,
+            IFactory<IOperation<CleanOldCartsRequest>> factory) 
             : base(logService, settingsService)
         {
             _hooReadOnlyEntitiesRepository = hooReadOnlyEntitiesRepository;
             _cartLinksEntitiesRepository = cartLinksEntitiesRepository;
+            _factory = factory;
         }
 
         public override async Task Execute(IJobExecutionContext context)
         {
+            LogService.Info?.Write("Cleaning job started...");
+            
+            IOperation<CleanOldCartsRequest> foo = _factory.Create();
+
+            await foo.ExecuteAsync(new CleanOldCartsRequest() {  }, CancellationToken.None);
+            
             foreach (CartLink link in await _cartLinksEntitiesRepository.ReadAsync(CancellationToken.None))
             {
                 

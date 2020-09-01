@@ -1,17 +1,51 @@
-﻿using ProtoCart.Services.Common.Infrastructure.Settings;
+﻿using Microsoft.Extensions.Configuration;
+using ProtoCart.Services.Common.Infrastructure.Settings;
 
 namespace ProtoCart.API.Service.Infrastructure.Settings
 {
     internal sealed class JsonSettingsService : SettingsService
     {
-        public override string Connection => "Data Source=E:/LevelUp/Database/blogging.db";
-        public override int HooksRetryCount => 3;
-        public override int ChunkSize => 250;
-        public override int ParallelDegree => 10;
+        public JsonSettingsService()
+        {
+            // This is bad solution. Settings should be from Consul or something like that
+            
+            IConfigurationSection root = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("Settings");
+
+            Connection = root[nameof(Connection)];
+            HooksRetryCount = TryParse(root[nameof(HooksRetryCount)], 3);
+            ChunkSize = TryParse(root[nameof(ChunkSize)], 250);
+            ParallelDegree = TryParse(root[nameof(ParallelDegree)], 10);
+        }
+        
+        public override string Connection { get; }
+        public override int HooksRetryCount { get; }
+        public override int ChunkSize { get; }
+        public override int ParallelDegree { get; }
         public override bool IsDebugLogsEnabled => true;
         public override bool IsTraceLogsEnabled => true;
         public override bool IsInfoLogsEnabled => true;
         public override bool IsFatalLogsEnabled => true;
         public override bool IsErrorLogsEnabled => true;
+
+        private int TryParse(string text, int defaultValue)
+        {
+            int val = defaultValue;
+            
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return val;
+            }
+            
+            try
+            {
+                int.TryParse(text, out val);
+            }
+            catch
+            {
+                // ignored
+            }
+
+            return val;
+        }
     }
 }

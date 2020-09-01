@@ -12,6 +12,7 @@
         
         public const string IdColumnName = "Id";
         public const string CartIdLinkTableColumnName = "CartId";
+        public const string ProductIdLinkTableColumnName = "ProductId";
         public const string ServiceIdHookColumnName = "ServiceId";
         
     }
