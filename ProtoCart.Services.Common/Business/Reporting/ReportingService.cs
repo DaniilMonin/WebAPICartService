@@ -32,7 +32,7 @@ namespace ProtoCart.Services.Common.Business.Reporting
             await _periodCartReportEntitiesRepository.CreateAsync(new PeriodCartReport
             {
                 CreationDate = DateTimeOffset.UtcNow,
-                Body = await _templatingService.RenderAsync(templateId, dataReport, cancellationToken, captureContext)
+                Body = await _templatingService.RenderAsync(templateId, new { Result = dataReport }, cancellationToken, captureContext)
                     .ConfigureAwait(captureContext)
             }, cancellationToken, captureContext).ConfigureAwait(captureContext);
     }
