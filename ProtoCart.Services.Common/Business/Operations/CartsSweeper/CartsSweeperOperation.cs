@@ -40,14 +40,21 @@ namespace ProtoCart.Services.Common.Business.Operations.CartsSweeper
             }
 
             List<Cart> carts = new List<Cart>();
-            
-            foreach (Cart cart in await _cartEntitiesRepository.ReadAsync(argument.DaysToRemove, cancellationToken, captureContext).ConfigureAwait(captureContext))
+
+            try
             {
-                await _linksEntitiesRepository.DeleteByCartIdAsync(cart.Id, cancellationToken, captureContext).ConfigureAwait(captureContext);
+                foreach (Cart cart in await _cartEntitiesRepository.ReadAsync(argument.DaysToRemove, cancellationToken, captureContext).ConfigureAwait(captureContext))
+                {
+                    await _linksEntitiesRepository.DeleteByCartIdAsync(cart.Id, cancellationToken, captureContext).ConfigureAwait(captureContext);
+                    //.IfSuccessThen
+                    await _cartEntitiesRepository.UpdateTimeStampAsync(cart.Id, DateTimeOffset.Now, cancellationToken, captureContext).ConfigureAwait(captureContext);
                 
-                await _cartEntitiesRepository.UpdateTimeStampAsync(cart.Id, DateTimeOffset.Now, cancellationToken, captureContext).ConfigureAwait(captureContext);
-                
-                carts.Add(cart);
+                    carts.Add(cart);
+                }
+            }
+            catch (Exception exception)
+            {
+                LogService.Error?.Write(exception.Message);
             }
 
             argument.Result = carts;

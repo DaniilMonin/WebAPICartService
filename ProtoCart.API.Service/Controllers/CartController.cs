@@ -17,6 +17,7 @@ namespace ProtoCart.API.Service.Controllers
     {
         private readonly ICartLinksEntitiesRepository _linksEntitiesRepository;
         private readonly IFactory<IOperation<ModifyCartItemsRequest>> _modifyCartItemsOperationFactory;
+        private const int OnlyOneItem = 1;
 
         public CartController(ILogService logService, ISettingsService settingsService, ICartLinksEntitiesRepository linksEntitiesRepository, IFactory<IOperation<ModifyCartItemsRequest>> modifyCartItemsOperationFactory) : base(logService, settingsService)
         {
@@ -30,17 +31,26 @@ namespace ProtoCart.API.Service.Controllers
         
         [HttpPut, IdempotenceCache]
         public async Task<IActionResult> Add(int cartId, int productId)
-            => ToJsonResult(await ModifyCartAsync(cartId, productId, CartItemOperation.Increment));
+            => ToJsonResult(await Add(cartId, productId, OnlyOneItem));
+        
+        [HttpPut("Bulk"), IdempotenceCache]
+        public async Task<IActionResult> Add(int cartId, int productId, int total)
+            => ToJsonResult(await ModifyCartAsync(cartId, productId, total, CartItemOperation.Increment));
 
         [HttpPut, IdempotenceCache]
         public async Task<IActionResult> Remove(int cartId, int productId)
-            => ToJsonResult(await ModifyCartAsync(cartId, productId, CartItemOperation.Decrement));
+            => ToJsonResult(await Remove(cartId, productId, OnlyOneItem));
 
-        private async Task<IActionResult> ModifyCartAsync(int cartId, int productId, CartItemOperation itemOperation)
+        [HttpPut("Bulk"), IdempotenceCache]
+        public async Task<IActionResult> Remove(int cartId, int productId, int total)
+            => ToJsonResult(await ModifyCartAsync(cartId, productId, total, CartItemOperation.Decrement));
+        
+        
+        private async Task<IActionResult> ModifyCartAsync(int cartId, int productId, int total, CartItemOperation itemOperation)
         {
             IOperation<ModifyCartItemsRequest> operation = _modifyCartItemsOperationFactory.Create();
             
-            await operation.ExecuteAsync(new ModifyCartItemsRequest { CartId = cartId, ProductId = productId, CartItemOperation = itemOperation }, CancellationToken.None);
+            await operation.ExecuteAsync(new ModifyCartItemsRequest { CartId = cartId, ProductId = productId, Total = total, CartItemOperation = itemOperation }, CancellationToken.None);
             
             return ToJsonResult(operation);
         }

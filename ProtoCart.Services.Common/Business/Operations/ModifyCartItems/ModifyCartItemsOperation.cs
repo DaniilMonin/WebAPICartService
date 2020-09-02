@@ -80,7 +80,7 @@ namespace ProtoCart.Services.Common.Business.Operations.ModifyCartItems
             {
                 CartId = argument.CartId,
                 ProductId = argument.ProductId,
-                Total = 1
+                Total = argument.Total
             };
 
             if (cancellationToken.IsCancellationRequested)
