@@ -13,38 +13,40 @@ namespace ProtoCart.Services.Common.Business.Calculators.GenerateCartReport
 {
     internal sealed class ReportCalculatorProcess : InfrastructureUnit, ICalculationProcess<CartItemAggregator>
     {
-        private readonly ConcurrentDictionary<int, ConcurrentDictionary<int, object>> _index = new ConcurrentDictionary<int, ConcurrentDictionary<int, object>>();
+        private readonly ConcurrentDictionary<int, ConcurrentBag<CartItemAggregator>> _index = new ConcurrentDictionary<int, ConcurrentBag<CartItemAggregator>>();
         
         public ReportCalculatorProcess(ILogService logService, ISettingsService settingsService) : base(logService, settingsService)
         {
         }
         
-        public void Calculate(IEnumerable<CartItemAggregator> entities) => CalculateAsync(entities, CancellationToken.None).WaitAndUnwrapException();
+        public ConcurrentDictionary<int, ConcurrentBag<CartItemAggregator>> Calculate(IEnumerable<CartItemAggregator> entities) => CalculateAsync(entities, CancellationToken.None).WaitAndUnwrapException();
 
-        public async Task CalculateAsync(IEnumerable<CartItemAggregator> entities, CancellationToken cancellationToken, bool captureContext = false)
+        public async Task<ConcurrentDictionary<int, ConcurrentBag<CartItemAggregator>>> CalculateAsync(IEnumerable<CartItemAggregator> entities, CancellationToken cancellationToken, bool captureContext = false)
         {
             if (entities is null)
             {
-                return;
+                return _index;
             }
 
+            _index.Clear();
+            
             await entities.ForEachAsync(SettingsService.ParallelDegree, async (aggregator, token, captureContext) => await Aggregate(aggregator, token, captureContext), cancellationToken, captureContext).ConfigureAwait(captureContext);
+
+            return _index;
         }
 
         private async Task<CartItemAggregator> Aggregate(CartItemAggregator itemAggregator, CancellationToken cancellationToken, bool captureContext = false)
         {
+            ConcurrentBag<CartItemAggregator> items = _index.SafetyGet(itemAggregator.CartId);
 
-            ConcurrentDictionary<int, object> productIndex = _index.SafetyGet(itemAggregator.CartId);
-
-            object product = productIndex.SafetyGet(itemAggregator.ProductId);
+            items.Add(itemAggregator);
             
-            
-            await Task.Delay(1, cancellationToken).ConfigureAwait(false);
+            await Task.Delay(1, cancellationToken).ConfigureAwait(captureContext);
 
             return itemAggregator;
         }
-        
-        public object ReportData { get; private set; }
+
+        public ConcurrentDictionary<int, ConcurrentBag<CartItemAggregator>> ReportData => _index;
     }
 
     internal static class ConcurrentDictionaryHelper
@@ -64,6 +66,5 @@ namespace ProtoCart.Services.Common.Business.Calculators.GenerateCartReport
             return item;
         }
     }
-    
 }
 
