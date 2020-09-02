@@ -18,8 +18,8 @@ namespace ProtoCart.Services.Common
                 .BindAsSingleton<ILogService, LogService>()
                 .BindAsSingleton<IReportingService, ReportingService>()
                 
-                .BindAsTransientToSelf<CartLinksCalculatorProcess>()
-                .BindAsFactory<CartLinksCalculatorProcess>()
+                .BindAsTransientToSelf<ReportCalculatorProcess>()
+                .BindAsFactory<ReportCalculatorProcess>()
                 
                 
                 .BindAsTransientToSelf<IOperation<AddHookRequest>, AddHookOperation>()

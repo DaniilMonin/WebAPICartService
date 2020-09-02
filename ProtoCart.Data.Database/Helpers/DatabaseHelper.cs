@@ -9,6 +9,7 @@
         public const string HooksTableName = "Hooks";
         public const string PeriodReportsTableName = "DailyCartReports";
         public const string TemplateReportsTableName = "TemplateReports";
+        public const string DailyReportViewName = "DailyReporting";
         
         public const string IdColumnName = "Id";
         public const string CartIdLinkTableColumnName = "CartId";

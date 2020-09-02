@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using ProtoCart.Data.Common.Aggregators;
 using ProtoCart.Data.Common.Entities;
 using ProtoCart.Services.Common.Business.Calculators;
 using ProtoCart.Services.Common.Repositories.Generic;
@@ -14,9 +15,9 @@ namespace ProtoCart.Services.Common.Business.Repositories.Links
         Task<IEnumerable<CartLink>> GetLinksByCartIdAsync(int cartId, CancellationToken cancellationToken,
             bool captureContext = false);
 
-        void Calculate(ICalculationProcess<CartLink> calculationProcess);
+        void Calculate(ICalculationProcess<CartItemAggregator> calculationProcess);
 
-        Task CalculateAsync(ICalculationProcess<CartLink> calculationProcess, CancellationToken cancellationToken,
+        Task CalculateAsync(ICalculationProcess<CartItemAggregator> calculationProcess, CancellationToken cancellationToken,
             bool captureContext = false);
 
         void DeleteByCartId(int cartId);

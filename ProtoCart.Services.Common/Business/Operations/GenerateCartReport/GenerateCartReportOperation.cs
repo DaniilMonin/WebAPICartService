@@ -19,7 +19,7 @@ namespace ProtoCart.Services.Common.Business.Operations.GenerateCartReport
         private readonly IReportingService _reportingService;
         private readonly IPeriodCartReportEntitiesRepository _periodCartReportEntitiesRepository;
         private readonly ICartLinksEntitiesRepository _linksEntitiesRepository;
-        private readonly IFactory<CartLinksCalculatorProcess> _linksCalculator;
+        private readonly IFactory<ReportCalculatorProcess> _linksCalculator;
 
         public GenerateCartReportOperation(
             ILogService logService, 
@@ -27,7 +27,7 @@ namespace ProtoCart.Services.Common.Business.Operations.GenerateCartReport
             IReportingService reportingService,
             IPeriodCartReportEntitiesRepository periodCartReportEntitiesRepository,
             ICartLinksEntitiesRepository linksEntitiesRepository,
-            IFactory<CartLinksCalculatorProcess> linksCalculator) 
+            IFactory<ReportCalculatorProcess> linksCalculator) 
             : base(logService, settingsService)
         {
             _reportingService = reportingService;
@@ -39,7 +39,7 @@ namespace ProtoCart.Services.Common.Business.Operations.GenerateCartReport
         protected override async Task DoProcessAsync(GenerateCartReportRequest argument,
             CancellationToken cancellationToken, bool captureContext = false)
         {
-            CartLinksCalculatorProcess linksCalculatorProcess = _linksCalculator.Create();
+            ReportCalculatorProcess linksCalculatorProcess = _linksCalculator.Create();
 
             await _linksEntitiesRepository.CalculateAsync(linksCalculatorProcess, cancellationToken, captureContext)
                 .ConfigureAwait(captureContext);
