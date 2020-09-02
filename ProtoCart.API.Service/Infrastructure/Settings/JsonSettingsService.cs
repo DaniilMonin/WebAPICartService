@@ -16,11 +16,13 @@ namespace ProtoCart.API.Service.Infrastructure.Settings
             ChunkSize = TryParse(root[nameof(ChunkSize)], 250);
             ParallelDegree = TryParse(root[nameof(ParallelDegree)], 10);
             SweeperDays = TryParse(root[nameof(SweeperDays)], 30);
+            DailyReportTemplateId = TryParse(root[nameof(DailyReportTemplateId)], 1);
         }
         
         public override string Connection { get; }
         public override int HooksRetryCount { get; }
         public override int ChunkSize { get; }
+        public override int DailyReportTemplateId { get; }
         public override int ParallelDegree { get; }
         public override int SweeperDays { get; }
         public override bool IsDebugLogsEnabled => true;

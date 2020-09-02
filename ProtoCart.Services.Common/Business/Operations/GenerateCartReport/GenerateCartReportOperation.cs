@@ -1,9 +1,12 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using ProtoCart.Data.Common.Entities;
 using ProtoCart.Data.Common.Requests;
 using ProtoCart.Services.Common.Business.Calculators.GenerateCartReport;
 using ProtoCart.Services.Common.Business.Reporting;
 using ProtoCart.Services.Common.Business.Repositories.Links;
+using ProtoCart.Services.Common.Business.Repositories.Reports;
 using ProtoCart.Services.Common.Infrastructure.Factories;
 using ProtoCart.Services.Common.Infrastructure.Logger;
 using ProtoCart.Services.Common.Infrastructure.Operations.Generic;
@@ -14,6 +17,7 @@ namespace ProtoCart.Services.Common.Business.Operations.GenerateCartReport
     internal sealed class GenerateCartReportOperation : Operation<GenerateCartReportRequest>
     {
         private readonly IReportingService _reportingService;
+        private readonly IPeriodCartReportEntitiesRepository _periodCartReportEntitiesRepository;
         private readonly ICartLinksEntitiesRepository _linksEntitiesRepository;
         private readonly IFactory<CartLinksCalculatorProcess> _linksCalculator;
 
@@ -21,11 +25,13 @@ namespace ProtoCart.Services.Common.Business.Operations.GenerateCartReport
             ILogService logService, 
             ISettingsService settingsService, 
             IReportingService reportingService,
+            IPeriodCartReportEntitiesRepository periodCartReportEntitiesRepository,
             ICartLinksEntitiesRepository linksEntitiesRepository,
             IFactory<CartLinksCalculatorProcess> linksCalculator) 
             : base(logService, settingsService)
         {
             _reportingService = reportingService;
+            _periodCartReportEntitiesRepository = periodCartReportEntitiesRepository;
             _linksEntitiesRepository = linksEntitiesRepository;
             _linksCalculator = linksCalculator;
         }
@@ -37,10 +43,10 @@ namespace ProtoCart.Services.Common.Business.Operations.GenerateCartReport
 
             await _linksEntitiesRepository.CalculateAsync(linksCalculatorProcess, cancellationToken, captureContext)
                 .ConfigureAwait(captureContext);
-
+            
             await _reportingService
-                .GenerateAsync(argument.ReportTemplateId, linksCalculatorProcess.ReportData, cancellationToken,
-                    captureContext).ConfigureAwait(captureContext);
+                .GenerateAsync(SettingsService.DailyReportTemplateId, linksCalculatorProcess.ReportData, cancellationToken, captureContext)
+                .ConfigureAwait(false);
         }
     }
 }

@@ -5,6 +5,7 @@
         public abstract string Connection { get; }
         public abstract int HooksRetryCount { get; }
         public abstract int ChunkSize { get; }
+        public abstract int DailyReportTemplateId { get; }
         public abstract int ParallelDegree { get; }
         public abstract int SweeperDays { get; }
         public abstract bool IsDebugLogsEnabled { get; }

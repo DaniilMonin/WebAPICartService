@@ -5,6 +5,7 @@
         string Connection { get; }
         int HooksRetryCount { get; }
         int ChunkSize { get; }
+        int DailyReportTemplateId { get; }
         int ParallelDegree { get; }
         int SweeperDays { get; }
         bool IsDebugLogsEnabled { get; }

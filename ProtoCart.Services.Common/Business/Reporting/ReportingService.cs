@@ -1,7 +1,10 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using ProtoCart.Data.Common.Entities;
 using ProtoCart.Services.Common.Business.Repositories.Reports;
 using ProtoCart.Services.Common.Business.Templating;
+using ProtoCart.Services.Common.Extensions.Tasks.Synchronous;
 using ProtoCart.Services.Common.Infrastructure;
 using ProtoCart.Services.Common.Infrastructure.Logger;
 using ProtoCart.Services.Common.Infrastructure.Settings;
@@ -20,14 +23,17 @@ namespace ProtoCart.Services.Common.Business.Reporting
         }
 
         public void Generate<TDataReport>(int templateId, TDataReport dataReport)
-        {
-            throw new System.NotImplementedException();
-        }
+            where TDataReport : class
+            => GenerateAsync(templateId, dataReport, CancellationToken.None).WaitAndUnwrapException();
 
-        public Task GenerateAsync<TDataReport>(int templateId, TDataReport dataReport, CancellationToken cancellationToken,
-            bool captureContext = false)
-        {
-            throw new System.NotImplementedException();
-        }
+        public async Task GenerateAsync<TDataReport>(int templateId, TDataReport dataReport, CancellationToken cancellationToken, bool captureContext = false) 
+            where TDataReport : class
+        =>
+            await _periodCartReportEntitiesRepository.CreateAsync(new PeriodCartReport
+            {
+                CreationDate = DateTimeOffset.UtcNow,
+                Body = await _templatingService.RenderAsync(templateId, dataReport, cancellationToken, captureContext)
+                    .ConfigureAwait(captureContext)
+            }, cancellationToken, captureContext).ConfigureAwait(captureContext);
     }
 }
