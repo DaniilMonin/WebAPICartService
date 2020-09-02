@@ -18,5 +18,9 @@ namespace ProtoCart.Services.Common.Business.Repositories.Links
 
         Task CalculateAsync(ICalculationProcess<CartLink> calculationProcess, CancellationToken cancellationToken,
             bool captureContext = false);
+
+        void DeleteByCartId(int cartId);
+        
+        Task DeleteByCartIdAsync(int cartId, CancellationToken cancellationToken, bool captureContext = false);
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ProtoCart.Data.Common.Entities;
 using ProtoCart.Data.Common.Operations;
 using ProtoCart.Data.Common.Requests;
+using ProtoCart.Services.Common.Business.Repositories.Carts;
 using ProtoCart.Services.Common.Business.Repositories.Links;
 using ProtoCart.Services.Common.Infrastructure.Logger;
 using ProtoCart.Services.Common.Infrastructure.Operations.Generic;
@@ -15,15 +16,18 @@ namespace ProtoCart.Services.Common.Business.Operations.ModifyCartItems
 {
     internal sealed  class ModifyCartItemsOperation : RequestOperation<ModifyCartItemsRequest>
     {
+        private readonly ICartEntitiesRepository _cartEntitiesRepository;
         private readonly ICartLinksEntitiesRepository _linksEntitiesRepository;
 
         public ModifyCartItemsOperation(
             ILogService logService, 
             ISettingsService settingsService, 
-            IValidationPolicy<ModifyCartItemsRequest> validationPolicy, 
+            IValidationPolicy<ModifyCartItemsRequest> validationPolicy,
+            ICartEntitiesRepository cartEntitiesRepository,
             ICartLinksEntitiesRepository linksEntitiesRepository) 
             : base(logService, settingsService, validationPolicy)
         {
+            _cartEntitiesRepository = cartEntitiesRepository;
             _linksEntitiesRepository = linksEntitiesRepository;
         }
 
@@ -72,7 +76,7 @@ namespace ProtoCart.Services.Common.Business.Operations.ModifyCartItems
 
         private async Task CreateNewLink(ModifyCartItemsRequest argument, CancellationToken cancellationToken, bool captureContext = false)
         {
-            CartLink link = new CartLink
+            CartLink cartLink = new CartLink
             {
                 CartId = argument.CartId,
                 ProductId = argument.ProductId,
@@ -84,7 +88,8 @@ namespace ProtoCart.Services.Common.Business.Operations.ModifyCartItems
                 cancellationToken.ThrowIfCancellationRequested();
             }
                         
-            await _linksEntitiesRepository.CreateAsync(link, cancellationToken, captureContext).ConfigureAwait(captureContext);
+            await _linksEntitiesRepository.CreateAsync(cartLink, cancellationToken, captureContext).ConfigureAwait(captureContext);
+            await _cartEntitiesRepository.UpdateTimeStampAsync(cartLink.CartId, DateTimeOffset.UtcNow, cancellationToken, captureContext).ConfigureAwait(captureContext);
         }
 
         private async Task UpdateOrDeleteLink(CartLink cartLink, bool increment, CancellationToken cancellationToken, bool captureContext = false)
@@ -111,11 +116,15 @@ namespace ProtoCart.Services.Common.Business.Operations.ModifyCartItems
             if (cartLink.Total == 0)
             {
                 await _linksEntitiesRepository.DeleteAsync(cartLink, cancellationToken, captureContext).ConfigureAwait(captureContext);
+                
+                await _cartEntitiesRepository.UpdateTimeStampAsync(cartLink.CartId, DateTimeOffset.UtcNow, cancellationToken, captureContext).ConfigureAwait(captureContext);
 
                 return;
             }
                         
             await _linksEntitiesRepository.UpdateAsync(cartLink, cancellationToken, captureContext).ConfigureAwait(captureContext);
+            
+            await _cartEntitiesRepository.UpdateTimeStampAsync(cartLink.CartId, DateTimeOffset.UtcNow, cancellationToken, captureContext).ConfigureAwait(captureContext);
         }
     }
 }

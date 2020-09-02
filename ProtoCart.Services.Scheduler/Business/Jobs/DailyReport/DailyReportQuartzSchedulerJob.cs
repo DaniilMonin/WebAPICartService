@@ -23,8 +23,8 @@ namespace ProtoCart.Services.Scheduler.Business.Jobs.DailyReport
         }
 
         public override async Task Execute(IJobExecutionContext context)
-            => await _factory.Create().ExecuteAsync(
-                new GenerateCartReportRequest() {ReportTemplateId = 1},
-                CancellationToken.None);
+            => await _factory
+                .Create()
+                .ExecuteAsync(new GenerateCartReportRequest {ReportTemplateId = 1}, CancellationToken.None);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using ProtoCart.Data.Common.Requests;
 using ProtoCart.Services.Common.Business.Calculators.GenerateCartReport;
-using ProtoCart.Services.Common.Business.Operations.CleanOldCarts;
+using ProtoCart.Services.Common.Business.Operations.CartsSweeper;
 using ProtoCart.Services.Common.Business.Operations.GenerateCartReport;
 using ProtoCart.Services.Common.Business.Operations.Hooks;
 using ProtoCart.Services.Common.Business.Operations.ModifyCartItems;
@@ -23,12 +23,12 @@ namespace ProtoCart.Services.Common
                 
                 
                 .BindAsTransientToSelf<IOperation<AddHookRequest>, AddHookOperation>()
-                .BindAsTransientToSelf<IOperation<CleanOldCartsRequest>, CleanOldCartsOperation>()
+                .BindAsTransientToSelf<IOperation<CartsSweeperRequest>, CartsSweeperOperation>()
                 .BindAsTransientToSelf<IOperation<ModifyCartItemsRequest>, ModifyCartItemsOperation>()
                 .BindAsTransientToSelf<IOperation<GenerateCartReportRequest>, GenerateCartReportOperation>()
                 
                 .BindAsOperationFactory<ModifyCartItemsRequest, ModifyCartItemsOperation>()
-                .BindAsOperationFactory<CleanOldCartsRequest, CleanOldCartsOperation>()
+                .BindAsOperationFactory<CartsSweeperRequest, CartsSweeperOperation>()
                 .BindAsOperationFactory<GenerateCartReportRequest, GenerateCartReportOperation>()
                 .BindAsOperationFactory<AddHookRequest, AddHookOperation>();
     }

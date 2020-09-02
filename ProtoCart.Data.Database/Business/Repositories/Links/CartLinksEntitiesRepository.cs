@@ -48,8 +48,22 @@ namespace ProtoCart.Data.Database.Business.Repositories.Links
             }).ConfigureAwait(captureContext);
         }
 
+        public void DeleteByCartId(int cartId)
+            => DeleteByCartIdAsync(cartId, CancellationToken.None).WaitAndUnwrapException();
+
+        public async Task DeleteByCartIdAsync(int cartId, CancellationToken cancellationToken, bool captureContext = false)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            
+            await Db.Query(TableName)
+                .Where(DatabaseHelper.CartIdLinkTableColumnName, cartId) 
+                .DeleteAsync().ConfigureAwait(captureContext);
+        }
+
         public override async Task UpdateAsync(CartLink entity, CancellationToken cancellationToken, bool captureContext = false)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             await Db.Query(TableName)
                 .Where(DatabaseHelper.CartIdLinkTableColumnName, entity.CartId)
                 .Where(DatabaseHelper.ProductIdLinkTableColumnName, entity.ProductId)

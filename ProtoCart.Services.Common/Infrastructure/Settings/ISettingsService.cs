@@ -6,6 +6,7 @@
         int HooksRetryCount { get; }
         int ChunkSize { get; }
         int ParallelDegree { get; }
+        int SweeperDays { get; }
         bool IsDebugLogsEnabled { get; }
         bool IsTraceLogsEnabled { get; }
         bool IsInfoLogsEnabled { get; }
